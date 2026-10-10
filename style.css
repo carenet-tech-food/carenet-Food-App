@@ -156,15 +156,15 @@ textarea:focus {
   box-shadow: 0 0 0 3px rgba(242, 101, 34, 0.15);
 }
 
-/* Required Field Error Highlighting */
+/* Required Field Validation Highlighting */
 label.field-error {
   color: #DC2626 !important;
-  font-weight: 700;
+  font-weight: 700 !important;
 }
 
 input.input-error,
 select.input-error {
-  border-color: #DC2626 !important;
+  border: 2px solid #DC2626 !important;
   background-color: #FEF2F2 !important;
   box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15) !important;
 }

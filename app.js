@@ -20,18 +20,28 @@ function switchTab(tabName) {
   }
 }
 
-// Clear Validation Errors
-function clearValidationErrors() {
-  const requiredFields = ['first_name', 'last_name', 'phone'];
-  requiredFields.forEach(id => {
-    const input = document.getElementById(id);
-    const label = document.getElementById(`lbl_${id}`) || document.querySelector(`label[for="${id}"]`);
-    if (input) input.classList.remove('input-error');
-    if (label) label.classList.remove('field-error');
-  });
+// Clear Single Field Error Highlight
+function clearFieldError(id) {
+  const input = document.getElementById(id);
+  const label = document.getElementById(`lbl_${id}`) || document.querySelector(`label[for="${id}"]`);
+  
+  if (input) {
+    input.classList.remove('input-error');
+    input.style.borderColor = '';
+    input.style.backgroundColor = '';
+  }
+  if (label) {
+    label.classList.remove('field-error');
+    label.style.color = '';
+  }
 }
 
-// Validate Required Fields and Highlight Red
+// Clear All Error Highlights
+function clearValidationErrors() {
+  ['first_name', 'last_name', 'phone'].forEach(id => clearFieldError(id));
+}
+
+// Validate Required Fields (Highlights Red on Missing Input)
 function validateForm() {
   clearValidationErrors();
   const requiredFields = ['first_name', 'last_name', 'phone'];
@@ -40,10 +50,18 @@ function validateForm() {
   requiredFields.forEach(id => {
     const input = document.getElementById(id);
     const label = document.getElementById(`lbl_${id}`) || document.querySelector(`label[for="${id}"]`);
+    
     if (!input || !input.value.trim()) {
       isValid = false;
-      if (input) input.classList.add('input-error');
-      if (label) label.classList.add('field-error');
+      if (input) {
+        input.classList.add('input-error');
+        input.style.borderColor = '#DC2626';
+        input.style.backgroundColor = '#FEF2F2';
+      }
+      if (label) {
+        label.classList.add('field-error');
+        label.style.color = '#DC2626';
+      }
     }
   });
 
@@ -122,12 +140,12 @@ function selectFamily(fam) {
   clearValidationErrors();
 }
 
-// Handle Service Visit Submission
+// Handle Form Submission
 async function handleFormSubmit(e) {
   e.preventDefault();
 
   if (!validateForm()) {
-    alert('Please fill in all required fields highlighted in red (First Name, Last Name, and Phone Number).');
+    alert('Please complete all required fields highlighted in red (First Name, Last Name, and Phone Number).');
     return;
   }
 
@@ -192,7 +210,7 @@ function resetForm() {
   clearValidationErrors();
 }
 
-// Fetch and render Table
+// Fetch and Render Table
 async function loadRecentVisits() {
   const tbody = document.getElementById('visitsTableBody');
   tbody.innerHTML = '<tr><td colspan="7">Loading recent visits...</td></tr>';

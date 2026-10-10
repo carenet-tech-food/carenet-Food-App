@@ -52,15 +52,15 @@
           <div class="form-grid">
             <div class="form-group">
               <label for="first_name" id="lbl_first_name">First Name *</label>
-              <input type="text" id="first_name" required>
+              <input type="text" id="first_name" oninput="clearFieldError('first_name')">
             </div>
             <div class="form-group">
               <label for="last_name" id="lbl_last_name">Last Name *</label>
-              <input type="text" id="last_name" required>
+              <input type="text" id="last_name" oninput="clearFieldError('last_name')">
             </div>
             <div class="form-group">
               <label for="phone" id="lbl_phone">Phone Number *</label>
-              <input type="tel" id="phone" required>
+              <input type="tel" id="phone" oninput="clearFieldError('phone')">
             </div>
             <div class="form-group">
               <label for="email">Email Address</label>
@@ -94,14 +94,14 @@
           <div class="form-grid">
             <div class="form-group">
               <label for="collection_center">Collection Center *</label>
-              <select id="collection_center" required>
+              <select id="collection_center">
                 <option value="LOC-MCC" selected>Manningham Christian Centre</option>
                 <option value="LOC-WDC">Westfield Distribution Centre</option>
               </select>
             </div>
             <div class="form-group">
               <label for="bags">Number of Bags *</label>
-              <input type="number" id="bags" value="1" min="1" required>
+              <input type="number" id="bags" value="1" min="1">
             </div>
             <div class="form-group">
               <label for="adults_60_plus">Adults (60+ yrs)</label>
