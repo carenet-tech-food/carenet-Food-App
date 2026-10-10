@@ -20,6 +20,36 @@ function switchTab(tabName) {
   }
 }
 
+// Clear Validation Errors
+function clearValidationErrors() {
+  const requiredFields = ['first_name', 'last_name', 'phone'];
+  requiredFields.forEach(id => {
+    const input = document.getElementById(id);
+    const label = document.getElementById(`lbl_${id}`) || document.querySelector(`label[for="${id}"]`);
+    if (input) input.classList.remove('input-error');
+    if (label) label.classList.remove('field-error');
+  });
+}
+
+// Validate Required Fields and Highlight Red
+function validateForm() {
+  clearValidationErrors();
+  const requiredFields = ['first_name', 'last_name', 'phone'];
+  let isValid = true;
+
+  requiredFields.forEach(id => {
+    const input = document.getElementById(id);
+    const label = document.getElementById(`lbl_${id}`) || document.querySelector(`label[for="${id}"]`);
+    if (!input || !input.value.trim()) {
+      isValid = false;
+      if (input) input.classList.add('input-error');
+      if (label) label.classList.add('field-error');
+    }
+  });
+
+  return isValid;
+}
+
 // Live Search Families as text is typed
 async function searchFamilies(query) {
   const list = document.getElementById('search-results');
@@ -28,8 +58,6 @@ async function searchFamilies(query) {
   
   const trimmed = query.trim();
   if (trimmed.length < 1) return;
-
-  console.log('Initiating search for:', trimmed);
 
   const filter = [
     `FamilyName.ilike.%${trimmed}%`,
@@ -54,8 +82,6 @@ async function searchFamilies(query) {
     list.appendChild(li);
     return;
   }
-
-  console.log('Returned rows:', data);
 
   if (!data || data.length === 0) {
     const li = document.createElement('li');
@@ -93,11 +119,18 @@ function selectFamily(fam) {
   
   document.getElementById('client_search').value = `${fam.PrimaryFirstName || ''} ${fam.FamilyName || ''}`.trim();
   document.getElementById('search-results').innerHTML = '';
+  clearValidationErrors();
 }
 
 // Handle Service Visit Submission
 async function handleFormSubmit(e) {
   e.preventDefault();
+
+  if (!validateForm()) {
+    alert('Please fill in all required fields highlighted in red (First Name, Last Name, and Phone Number).');
+    return;
+  }
+
   let familyId = document.getElementById('selected_family_id').value;
 
   if (!familyId) {
@@ -156,6 +189,7 @@ function resetForm() {
   document.getElementById('foodReliefForm').reset();
   document.getElementById('selected_family_id').value = '';
   document.getElementById('search-results').innerHTML = '';
+  clearValidationErrors();
 }
 
 // Fetch and render Table

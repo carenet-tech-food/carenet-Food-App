@@ -25,14 +25,14 @@
 
     <!-- TAB 1: FORM -->
     <section id="food-relief-form-tab" class="tab-content active">
-      <form id="foodReliefForm" onsubmit="handleFormSubmit(event)">
+      <form id="foodReliefForm" onsubmit="handleFormSubmit(event)" novalidate>
         
         <!-- Live Search / Select Client -->
         <fieldset class="form-section">
           <legend>Search or Select Family</legend>
           <div class="form-grid">
             <div class="form-group full-width">
-              <label for="client_search">Search Existing Family (Name, Phone, or Email):</label>
+              <label for="client_search">Search Existing Family (Name, Phone, Suburb):</label>
               <input 
                 type="text" 
                 id="client_search" 
@@ -51,16 +51,16 @@
           <legend>Primary Contact Details</legend>
           <div class="form-grid">
             <div class="form-group">
-              <label for="first_name">First Name *</label>
+              <label for="first_name" id="lbl_first_name">First Name *</label>
               <input type="text" id="first_name" required>
             </div>
             <div class="form-group">
-              <label for="last_name">Last Name *</label>
+              <label for="last_name" id="lbl_last_name">Last Name *</label>
               <input type="text" id="last_name" required>
             </div>
             <div class="form-group">
-              <label for="phone">Phone Number</label>
-              <input type="tel" id="phone">
+              <label for="phone" id="lbl_phone">Phone Number *</label>
+              <input type="tel" id="phone" required>
             </div>
             <div class="form-group">
               <label for="email">Email Address</label>
@@ -136,7 +136,7 @@
 
         <div class="form-actions">
           <button type="submit" class="btn primary-btn">Record Service Visit</button>
-          <button type="reset" class="btn secondary-btn" onclick="resetForm()">Clear Form</button>
+          <button type="button" class="btn secondary-btn" onclick="resetForm()">Clear Form</button>
         </div>
       </form>
     </section>

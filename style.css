@@ -94,7 +94,7 @@ body {
   display: block;
 }
 
-/* Form Sections (Matching CareNet Booking Cards) */
+/* Form Sections */
 .form-section {
   background: #FFFFFF;
   border: 1px solid var(--border-color);
@@ -132,6 +132,7 @@ label {
   font-size: 0.875rem;
   font-weight: 600;
   color: var(--text-primary);
+  transition: color 0.2s ease;
 }
 
 input[type="text"],
@@ -145,7 +146,7 @@ textarea {
   border-radius: 6px;
   font-size: 0.95rem;
   outline: none;
-  transition: border-color 0.15s ease;
+  transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 input:focus,
@@ -153,6 +154,19 @@ select:focus,
 textarea:focus {
   border-color: var(--primary-orange);
   box-shadow: 0 0 0 3px rgba(242, 101, 34, 0.15);
+}
+
+/* Required Field Error Highlighting */
+label.field-error {
+  color: #DC2626 !important;
+  font-weight: 700;
+}
+
+input.input-error,
+select.input-error {
+  border-color: #DC2626 !important;
+  background-color: #FEF2F2 !important;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15) !important;
 }
 
 /* Autocomplete List */
