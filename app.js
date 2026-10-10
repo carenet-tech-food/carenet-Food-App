@@ -18,23 +18,43 @@ function switchTab(tabName) {
   }
 }
 
-// Search Families for Autocomplete
+// Search Families for Autocomplete (Fixed for Null Family Names & Field Quoting)
 async function searchFamilies(query) {
   const list = document.getElementById('search-results');
   list.innerHTML = '';
-  if (query.trim().length < 2) return;
+  const trimmed = query.trim();
+  
+  if (trimmed.length < 2) return;
 
+  // Search across PrimaryFirstName, PreferredName, FamilyName, and Phone
   const { data, error } = await supabase
     .from('families')
-    .select('FamilyID, FamilyName, PrimaryFirstName, Phone, Suburb')
-    .or(`PrimaryFirstName.ilike.%${query}%,FamilyName.ilike.%${query}%,Phone.ilike.%${query}%`)
-    .limit(5);
+    .select('"FamilyID", "FamilyName", "PrimaryFirstName", "PreferredName", "Phone", "Suburb", "Address", "Email"')
+    .or(`"PrimaryFirstName".ilike.%${trimmed}%,"PreferredName".ilike.%${trimmed}%,"FamilyName".ilike.%${trimmed}%,"Phone".ilike.%${trimmed}%`)
+    .limit(8);
 
-  if (error || !data) return;
+  if (error) {
+    console.error('Search error:', error);
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    const li = document.createElement('li');
+    li.textContent = 'No matching family found.';
+    li.style.color = '#6B7280';
+    li.style.cursor = 'default';
+    list.appendChild(li);
+    return;
+  }
 
   data.forEach(fam => {
     const li = document.createElement('li');
-    li.textContent = `${fam.PrimaryFirstName} ${fam.FamilyName || ''} — ${fam.Suburb || ''} (${fam.Phone || 'No Phone'})`;
+    const firstName = fam.PrimaryFirstName || fam.PreferredName || '';
+    const lastName = fam.FamilyName ? ` ${fam.FamilyName}` : '';
+    const suburb = fam.Suburb ? ` — ${fam.Suburb}` : '';
+    const phone = fam.Phone ? ` (${fam.Phone})` : '';
+
+    li.textContent = `${firstName}${lastName}${suburb}${phone}`;
     li.onclick = () => selectFamily(fam);
     list.appendChild(li);
   });
@@ -42,10 +62,15 @@ async function searchFamilies(query) {
 
 function selectFamily(fam) {
   document.getElementById('selected_family_id').value = fam.FamilyID;
-  document.getElementById('first_name').value = fam.PrimaryFirstName;
+  document.getElementById('first_name').value = fam.PrimaryFirstName || fam.PreferredName || '';
   document.getElementById('last_name').value = fam.FamilyName || '';
   document.getElementById('phone').value = fam.Phone || '';
+  document.getElementById('email').value = fam.Email || '';
+  document.getElementById('address').value = fam.Address || '';
   document.getElementById('suburb').value = fam.Suburb || '';
+  
+  // Update input text box to selected name and clear dropdown list
+  document.getElementById('client_search').value = `${fam.PrimaryFirstName || ''} ${fam.FamilyName || ''}`.trim();
   document.getElementById('search-results').innerHTML = '';
 }
 
@@ -121,7 +146,7 @@ async function loadRecentVisits() {
 
   const { data, error } = await supabase
     .from('service_visits')
-    .select('ServiceDateTime, Bags, RecordedBy, LocationID, families(FamilyName, PrimaryFirstName, Suburb)')
+    .select('ServiceDateTime, Bags, RecordedBy, LocationID, families("FamilyName", "PrimaryFirstName", "Suburb")')
     .order('ServiceDateTime', { ascending: false })
     .limit(25);
 
