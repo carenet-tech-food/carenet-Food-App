@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Food Relief Form - CareNet</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Supabase JS Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="header-container">
+      <img src="https://www.carenet.org.au/wp-content/uploads/2023/07/CareNet-logo-just-graphic-black.png" alt="CareNet Logo" class="logo">
+      <h2>CareNet Food Relief System</h2>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <div class="tabs-nav">
+      <button class="tab-btn active" id="tab-form-btn" onclick="switchTab('form')">Food Relief Form</button>
+      <button class="tab-btn" id="tab-table-btn" onclick="switchTab('table')">Recent Food Relief Visits</button>
+    </div>
+
+    <!-- TAB 1: FORM -->
+    <section id="food-relief-form-tab" class="tab-content active">
+      <form id="foodReliefForm" onsubmit="handleFormSubmit(event)">
+        
+        <!-- Search / Quick Client Link -->
+        <fieldset class="form-section">
+          <legend>Search or Select Family</legend>
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <label for="client_search">Search Existing Family (Name, Phone, Suburb):</label>
+              <input type="text" id="client_search" placeholder="Type name or phone to search..." oninput="searchFamilies(this.value)">
+              <ul id="search-results" class="autocomplete-list"></ul>
+            </div>
+            <input type="hidden" id="selected_family_id">
+          </div>
+        </fieldset>
+
+        <!-- Primary Client Details -->
+        <fieldset class="form-section">
+          <legend>Primary Contact Details</legend>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="first_name">First Name *</label>
+              <input type="text" id="first_name" required>
+            </div>
+            <div class="form-group">
+              <label for="last_name">Last Name *</label>
+              <input type="text" id="last_name" required>
+            </div>
+            <div class="form-group">
+              <label for="phone">Phone Number</label>
+              <input type="tel" id="phone">
+            </div>
+            <div class="form-group">
+              <label for="email">Email Address</label>
+              <input type="email" id="email">
+            </div>
+            <div class="form-group">
+              <label for="address">Street Address</label>
+              <input type="text" id="address">
+            </div>
+            <div class="form-group">
+              <label for="suburb">Suburb</label>
+              <input type="text" id="suburb">
+            </div>
+            <div class="form-group">
+              <label for="postcode">Postcode</label>
+              <input type="number" id="postcode">
+            </div>
+            <div class="form-group">
+              <label for="status">Client Status</label>
+              <select id="status">
+                <option value="Active" selected>Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Visit & Demographics Record -->
+        <fieldset class="form-section">
+          <legend>Service Visit & Household Demographics</legend>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="collection_center">Collection Center *</label>
+              <select id="collection_center" required>
+                <option value="LOC-MCC" selected>Manningham Christian Centre</option>
+                <option value="LOC-WDC">Westfield Distribution Centre</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="bags">Number of Bags *</label>
+              <input type="number" id="bags" value="1" min="1" required>
+            </div>
+            <div class="form-group">
+              <label for="adults_60_plus">Adults (60+ yrs)</label>
+              <input type="number" id="adults_60_plus" value="0" min="0">
+            </div>
+            <div class="form-group">
+              <label for="adults_50_59">Adults (50–59 yrs)</label>
+              <input type="number" id="adults_50_59" value="0" min="0">
+            </div>
+            <div class="form-group">
+              <label for="adults_35_49">Adults (35–49 yrs)</label>
+              <input type="number" id="adults_35_49" value="0" min="0">
+            </div>
+            <div class="form-group">
+              <label for="adults_25_34">Adults (25–34 yrs)</label>
+              <input type="number" id="adults_25_34" value="0" min="0">
+            </div>
+            <div class="form-group">
+              <label for="youth_12_24">Youth (12–24 yrs)</label>
+              <input type="number" id="youth_12_24" value="0" min="0">
+            </div>
+            <div class="form-group">
+              <label for="children_0_12">Children (0–12 yrs)</label>
+              <input type="number" id="children_0_12" value="0" min="0">
+            </div>
+            <div class="form-group full-width">
+              <label for="notes">Visit Comments / Notes</label>
+              <textarea id="notes" rows="3"></textarea>
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="form-actions">
+          <button type="submit" class="btn primary-btn">Record Service Visit</button>
+          <button type="reset" class="btn secondary-btn" onclick="resetForm()">Clear Form</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- TAB 2: TABLE VIEW -->
+    <section id="food-relief-table-tab" class="tab-content">
+      <div class="table-container">
+        <table id="visitsTable">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Family Name</th>
+              <th>Primary Contact</th>
+              <th>Suburb</th>
+              <th>Bags</th>
+              <th>Location</th>
+              <th>Recorded By</th>
+            </tr>
+          </thead>
+          <tbody id="visitsTableBody">
+            <tr><td colspan="7">Loading recent visits...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
