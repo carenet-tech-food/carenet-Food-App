@@ -18,19 +18,18 @@ function switchTab(tabName) {
   }
 }
 
-// Search Families for Autocomplete (Fixed for Null Family Names & Field Quoting)
+// Live Search Families as text is typed (FamilyName, PrimaryFirstName, PreferredName, Phone, Email)
 async function searchFamilies(query) {
   const list = document.getElementById('search-results');
   list.innerHTML = '';
   const trimmed = query.trim();
   
-  if (trimmed.length < 2) return;
+  if (trimmed.length < 1) return;
 
-  // Search across PrimaryFirstName, PreferredName, FamilyName, and Phone
   const { data, error } = await supabase
     .from('families')
-    .select('"FamilyID", "FamilyName", "PrimaryFirstName", "PreferredName", "Phone", "Suburb", "Address", "Email"')
-    .or(`"PrimaryFirstName".ilike.%${trimmed}%,"PreferredName".ilike.%${trimmed}%,"FamilyName".ilike.%${trimmed}%,"Phone".ilike.%${trimmed}%`)
+    .select('"FamilyID", "FamilyName", "PrimaryFirstName", "PreferredName", "Phone", "Email", "Suburb", "Address"')
+    .or(`"FamilyName".ilike.%${trimmed}%,"PrimaryFirstName".ilike.%${trimmed}%,"PreferredName".ilike.%${trimmed}%,"Phone".ilike.%${trimmed}%,"Email".ilike.%${trimmed}%`)
     .limit(8);
 
   if (error) {
@@ -53,8 +52,9 @@ async function searchFamilies(query) {
     const lastName = fam.FamilyName ? ` ${fam.FamilyName}` : '';
     const suburb = fam.Suburb ? ` — ${fam.Suburb}` : '';
     const phone = fam.Phone ? ` (${fam.Phone})` : '';
+    const email = fam.Email ? ` [${fam.Email}]` : '';
 
-    li.textContent = `${firstName}${lastName}${suburb}${phone}`;
+    li.textContent = `${firstName}${lastName}${suburb}${phone}${email}`;
     li.onclick = () => selectFamily(fam);
     list.appendChild(li);
   });
@@ -69,7 +69,7 @@ function selectFamily(fam) {
   document.getElementById('address').value = fam.Address || '';
   document.getElementById('suburb').value = fam.Suburb || '';
   
-  // Update input text box to selected name and clear dropdown list
+  // Update text box value and clear search suggestions
   document.getElementById('client_search').value = `${fam.PrimaryFirstName || ''} ${fam.FamilyName || ''}`.trim();
   document.getElementById('search-results').innerHTML = '';
 }
