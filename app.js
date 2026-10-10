@@ -1,7 +1,7 @@
 // Initialize Supabase Client (guarded against re-declaration)
 if (typeof supabaseClient === 'undefined') {
-  var SUPABASE_URL = 'https://YOUR_PROJECT_REF.supabase.co';
-  var SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+  var SUPABASE_URL = 'https://cdphkzmmwldmvihxpjos.supabase.co';
+  var SUPABASE_ANON_KEY = 'sb_publishable_ZD-IdUl7r1p21Stmw3r2BA_3jCvCZ6L';
   var supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
 
